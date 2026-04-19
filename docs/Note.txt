@@ -1,0 +1,18 @@
+Switched to data file based storage system, from sql database
+
+Made upto table creation through running "database/schema.sql"
+src/main/resources/application.properties - db connecting lines cleared and add a db exclude command line
+(no need of exclude command line if dependencies remove)
+
+didn't remove database-related dependencies:
+pom.xml/
+1. Spring Data JPA
+2. MySQL Driver
+
+database/schema.sql becomes unused
+WAMP / phpMyAdmin / MySQL are no longer part of runtime
+the database folder can stay in the repo, but it becomes optional/documentation only
+docs should be updated later so they no longer say “MySQL storage”
+
+Member ship module deleted and updated necessary parts
+
