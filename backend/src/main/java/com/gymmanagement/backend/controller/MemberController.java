@@ -2,7 +2,6 @@ package com.gymmanagement.backend.controller;
 
 import com.gymmanagement.backend.model.member;
 import com.gymmanagement.backend.service.MemberService;
-import com.gymmanagement.backend.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +17,7 @@ public class MemberController {
 
     //Create
     @PostMapping("/add")
-    public String addMember(@RequestBody member member)throws IOException{
+    public String addMember(member member)throws IOException{
         service.addMember(member);
         return "Member added successfully";
 
@@ -38,7 +37,7 @@ public class MemberController {
 
     //Update
     @PutMapping("/update")
-    public String updateMember(@RequestBody member member,@RequestParam String currentUserId,@RequestParam String role)throws IOException{
+    public String updateMember(member member, @RequestParam String currentUserId, @RequestParam String role)throws IOException{
         service.updateMember(member,currentUserId,role);
         return "updated successfully";
     }
