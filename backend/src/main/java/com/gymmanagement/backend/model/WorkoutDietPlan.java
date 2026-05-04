@@ -67,7 +67,6 @@ public class WorkoutDietPlan {
 
 
 
-// ai mhema danneeeee??
     public int getPlanId() {
         return 0;
     }
