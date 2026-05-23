@@ -1,0 +1,2 @@
+PAY001|M001|John Silva|Monthly|2500|Card|2026-01-15|Paid
+PAY002|M002|Sarah Fernando|Yearly|8500|Bank Transfer|2026-02-20|Paid
