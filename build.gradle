@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'war'
+}
+
+group = 'com.fitnesscenter'
+version = '1.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    implementation 'javax.servlet:jstl:1.2'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+bootWar {
+    webAppDirName = 'src/main/webapp'
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources', 'src/main/webapp']
+        }
+    }
+}
