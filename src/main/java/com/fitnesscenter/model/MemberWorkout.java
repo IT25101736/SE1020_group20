@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class MemberWorkout {
     private String memberId;
     private String planType; // PPL, Full Body, Arnold, Upper Lower
-    private List<WorkoutPlan> days;
+    private List<WorkoutPlan> days; //LIST of WorkoutPlan
 
 
 

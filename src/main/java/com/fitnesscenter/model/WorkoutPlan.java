@@ -1,9 +1,12 @@
 package com.fitnesscenter.model;
 
-public class WorkoutPlan {
+public class WorkoutPlan {   //ONE Day of a workout
+
     private String day;
     private String focus; // Push — Chest & Shoulders
     private String exercises; // comma separated "Bench Press 4x8, Incline DB 3x10"
+
+
 
     public WorkoutPlan(String day, String focus, String exercises) {
         this.day = day;
