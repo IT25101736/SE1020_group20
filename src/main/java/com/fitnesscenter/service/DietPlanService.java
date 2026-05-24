@@ -16,12 +16,21 @@ public class DietPlanService {
 
 
 
+    //READ
+
+    //Read ALL
+
     public List<DietPlan> getAllDietPlans() throws IOException {
+
         List<DietPlan> plans = new ArrayList<>();
+
         File file = new File(filePath);
+
         if (!file.exists()) return plans;
+
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line;
+
         while ((line = reader.readLine()) != null) {
             if (line.trim().isEmpty()) continue;
             String[] p = line.split("\\|", -1);
@@ -30,9 +39,8 @@ public class DietPlanService {
             }
         }
         reader.close();
-        return plans;
+        return plans; // return all diet plans
     }
-
 
 
 
@@ -49,43 +57,57 @@ public class DietPlanService {
 
 
 
-
+    // Read ONE by memberId
     public DietPlan findByMemberId(String memberId) throws IOException {
+
         for (DietPlan p : getAllDietPlans()) {
-            if (p.getMemberId().equals(memberId)) return p;
+
+            if (p.getMemberId().equals(memberId)) return p; // found it — return this one plan
         }
-        return null;
+        return null; // not found
     }
 
 
 
+
+    //CREATE , UPDATE
     public void createOrUpdate(String memberId, String planName, String breakfast,
                                String lunch, String dinner, String snacks,
                                String notes) throws IOException {
+
         List<DietPlan> plans = getAllDietPlans();
+
         for (DietPlan p : plans) {
             if (p.getMemberId().equals(memberId)) {
+
+                // member found ----> UPDATE
                 p.setPlanName(planName);
                 p.setBreakfastItems(breakfast);
                 p.setLunchItems(lunch);
                 p.setDinnerItems(dinner);
                 p.setSnackItems(snacks);
                 p.setNotes(notes);
-                saveAllDietPlans(plans);
+
+                saveAllDietPlans(plans);  // save updated list to file
                 return;
             }
         }
 
+
+        // Member NOT found ----> CREATE
         plans.add(new DietPlan(memberId, planName, breakfast, lunch, dinner, snacks, notes));
         saveAllDietPlans(plans);
     }
 
 
 
-
+    //DELETE
     public void deleteDietPlan(String memberId) throws IOException {
+
         List<DietPlan> plans = getAllDietPlans();
-        plans.removeIf(p -> p.getMemberId().equals(memberId));
+
+        plans.removeIf(p -> p.getMemberId().equals(memberId)); //remove matching one
+
         saveAllDietPlans(plans);
     }
 }
