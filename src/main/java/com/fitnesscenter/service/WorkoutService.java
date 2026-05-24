@@ -12,12 +12,15 @@ import java.util.*;
 public class WorkoutService {
 
     @Value("${workout.file.path}")
-    private String filePath;
+    private String filePath; // filePath is private — hidden from controller - Encapsulation
 
 
 
     // ---- Pre-built Templates ----
+
     public MemberWorkout getTemplate(String planType) {
+        //  Returns a pre-built 7-day workout plan
+
         MemberWorkout workout = new MemberWorkout("", planType);
 
         if (planType.equals("PPL")) {
@@ -65,20 +68,30 @@ public class WorkoutService {
 
 
     // ---- SAVE member workout to file ----
+
+    //CREATE
+
+    // Update
+
     public void saveMemberWorkout(MemberWorkout workout) throws IOException {
         List<String> lines = new ArrayList<>();
         File file = new File(filePath);
         file.getParentFile().mkdirs();
 
+
         // Read existing lines excluding this member
         if (file.exists()) {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
+
             boolean skip = false;
             while ((line = reader.readLine()) != null) {
+
+                // Found old data — START skipping
                 if (line.startsWith("MEMBER:" + workout.getMemberId())) {
                     skip = true;
-                }
+
+                } //Found end of old data — STOP skipping
                 if (skip && line.startsWith("END:" + workout.getMemberId())) {
                     skip = false;
                     continue;
@@ -88,13 +101,14 @@ public class WorkoutService {
             reader.close();
         }
 
-        // Add new workout block
+        // Add new workout block -Updated new block
         lines.add("MEMBER:" + workout.getMemberId());
         lines.add("PLAN:" + workout.getPlanType());
         for (WorkoutPlan day : workout.getDays()) {
-            lines.add("DAY:" + day.toFileString());
+            lines.add("DAY:" + day.toFileString()); //pipe format
         }
         lines.add("END:" + workout.getMemberId());
+
 
         // Write back
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -110,6 +124,10 @@ public class WorkoutService {
 
 
     // ---- GET member workout from file ----
+
+    //READ
+
+    //ABSTRACTION
     public MemberWorkout getMemberWorkout(String memberId) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) return null;
@@ -143,6 +161,7 @@ public class WorkoutService {
 
 
     // ---- DELETE member workout ----
+
     public void deleteMemberWorkout(String memberId) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) return;
@@ -152,14 +171,14 @@ public class WorkoutService {
         String line;
         boolean skip = false;
 
-        while ((line = reader.readLine()) != null) {
+        while ((line = reader.readLine()) != null) { //Read all,ignore matching block
             if (line.equals("MEMBER:" + memberId)) { skip = true; }
             if (!skip) lines.add(line);
             if (line.equals("END:" + memberId)) { skip = false; }
         }
         reader.close();
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file)); //save the  list back
         for (String l : lines) {
             writer.write(l);
             writer.newLine();
