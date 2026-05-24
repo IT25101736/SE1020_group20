@@ -20,7 +20,7 @@ public class MemberWorkout {
 
     public String getMemberId()          { return memberId; }
     public String getPlanType()          { return planType; }
-    public List<WorkoutPlan> getDays()   { return days; }
+    public List<WorkoutPlan> getDays()   { return days; }// Returns the entire multi-day list
 
 
 
