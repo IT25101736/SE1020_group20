@@ -1,5 +1,6 @@
 package com.fitnesscenter.controller;
 
+import com.fitnesscenter.model.Admin;
 import com.fitnesscenter.model.Member;
 import com.fitnesscenter.service.MemberService;
 import javax.servlet.http.HttpSession;
