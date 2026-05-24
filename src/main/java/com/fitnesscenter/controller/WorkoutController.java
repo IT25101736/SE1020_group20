@@ -18,7 +18,7 @@ import java.util.List;
 @Controller
 public class WorkoutController {
 
-    @Autowired
+    @Autowired  //Inheritance - Spring injects service automatically , DEPENDENCY INJECTION
     private WorkoutService workoutService;
 
     @Autowired
@@ -28,12 +28,17 @@ public class WorkoutController {
 
 
     // ---- GET /member/workout — member view ----
+
     @GetMapping("/member/workout")
     public String memberWorkout(HttpSession session, Model model) throws IOException {
+
         Member loggedMember = (Member) session.getAttribute("loggedMember");
+
         if (loggedMember == null) return "redirect:/login";
 
+        //Abstraction -  Controller just CALLS the method — doesn't know HOW it works
         MemberWorkout workout = workoutService.getMemberWorkout(loggedMember.getId());
+
         model.addAttribute("loggedMember", loggedMember);
         model.addAttribute("workout", workout);
         return "my-workout";
@@ -43,6 +48,9 @@ public class WorkoutController {
 
 
     // ---- GET /manage/workouts — admin view ----
+
+    //POLYMORPHISM
+
     @GetMapping("/manage/workouts")
     public String manageWorkouts(HttpSession session, Model model) throws IOException {
         Admin loggedAdmin = (Admin) session.getAttribute("loggedAdmin");
@@ -58,11 +66,13 @@ public class WorkoutController {
 
 
     // ---- GET /manage/workouts/assign?memberId=X — load template ----
+
     @GetMapping("/manage/workouts/assign")
     public String assignWorkout(@RequestParam String memberId,
                                 @RequestParam String planType,
                                 HttpSession session,
                                 Model model) throws IOException {
+
         Admin loggedAdmin = (Admin) session.getAttribute("loggedAdmin");
         if (loggedAdmin == null) return "redirect:/login";
 
@@ -81,6 +91,7 @@ public class WorkoutController {
 
 
     // ---- POST /manage/workouts/save — save customized workout ----
+
     @PostMapping("/manage/workouts/save")
     public String saveWorkout(@RequestParam String memberId,
                               @RequestParam String planType,
@@ -104,9 +115,10 @@ public class WorkoutController {
     }
 
 
-    
+
 
     // ---- POST /manage/workouts/delete ----
+
     @PostMapping("/manage/workouts/delete")
     public String deleteWorkout(@RequestParam String memberId,
                                 HttpSession session) throws IOException {
