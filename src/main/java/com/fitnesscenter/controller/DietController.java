@@ -15,10 +15,10 @@ import java.util.List;
 
 
 
-@Controller
+@Controller //Inheritance
 public class DietController {
 
-    @Autowired  //Spring automatically gives the service object
+    @Autowired  // Spring injects service automatically
     private DietPlanService dietPlanService;
 
     @Autowired
@@ -31,7 +31,7 @@ public class DietController {
 
     @GetMapping("/member/diet") // when user opens a page
 
-    public String memberDiet(HttpSession session, Model model) throws IOException {
+    public String memberDiet(HttpSession session, Model model) throws IOException { // check if member logging using http
 
         Member loggedMember = (Member) session.getAttribute("loggedMember");
 
@@ -44,6 +44,8 @@ public class DietController {
         model.addAttribute("dietPlan", dietPlan);
 
         return "member-diet";
+
+        // from the service and sends it to the HTML page to display
     }
 
 
@@ -69,9 +71,13 @@ public class DietController {
                 breakfast, lunch, dinner, snacks, notes);
 
         return "redirect:/member/diet?saved=true"; //Goes  another page after action
+
+        //fills the diet form and clicks Save
+
+        //using @RequestParam-gets all form values , save
     }
 
-  //@RequestParam-gets all form values
+
 
 
 
@@ -86,7 +92,9 @@ public class DietController {
 
         if (loggedMember == null) return "redirect:/login";
 
-        dietPlanService.deleteDietPlan(loggedMember.getId());
+        dietPlanService.deleteDietPlan(loggedMember.getId()); //call
+
+        //delete from file
 
         return "redirect:/member/diet";
     }
@@ -103,7 +111,7 @@ public class DietController {
 
         if (loggedAdmin == null) return "redirect:/login";
 
-        List<Member> members     = memberService.getAllMembers();
+        List<Member> members     = memberService.getAllMembers(); // get all mem lists from memberService
 
         List<DietPlan> dietPlans = dietPlanService.getAllDietPlans();
 
@@ -114,6 +122,8 @@ public class DietController {
         model.addAttribute("loggedAdmin", loggedAdmin);
 
         return "admin-diet";
+
+        //from service sends them to HTML , so admin can see it
     }
 
 
@@ -121,7 +131,8 @@ public class DietController {
 
     // ---- GET /admin/diet/edit — admin edits a specific member's diet plan ----
     @GetMapping("/admin/diet/edit")
-    public String adminDietEdit(@RequestParam String memberId,
+
+    public String adminDietEdit(@RequestParam String memberId, //@RequestParam gets memberId from URL
                                 HttpSession session, Model model) throws IOException {
 
         Admin loggedAdmin = (Admin) session.getAttribute("loggedAdmin");
@@ -138,7 +149,13 @@ public class DietController {
 
         model.addAttribute("loggedAdmin", loggedAdmin);
 
-        return "admin-diet-edit"; //sends  to the edit form page so admin can chng
+        return "admin-diet-edit"; //sends  to the edit form page so admin can change
+
+
+        //Get member details from memberService
+        //Get existing diet plan from dietPlanService
+
+        //Send both to HTML edit form , Show admin-diet-edit page with pre-filled form
 
     }
 
@@ -147,16 +164,20 @@ public class DietController {
 
     // ---- POST /admin/diet/save — admin saves diet plan for a member ----
     @PostMapping("/admin/diet/save")
-    public String adminDietSave(@RequestParam String memberId,
+
+    public String adminDietSave(@RequestParam String memberId, //get all form values
                                 @RequestParam String planName,
                                 @RequestParam String breakfast,
                                 @RequestParam String lunch,
                                 @RequestParam String dinner,
                                 @RequestParam String snacks,
                                 @RequestParam String notes,
+
                                 HttpSession session) throws IOException {
         if (session.getAttribute("loggedAdmin") == null) return "redirect:/login";
+
         dietPlanService.createOrUpdate(memberId, planName, breakfast, lunch, dinner, snacks, notes);
+        // call and save or update the diet plan file
 
         return "redirect:/admin/diet?saved=true";
 
@@ -167,10 +188,13 @@ public class DietController {
 
     // ---- POST /admin/diet/delete — admin deletes a member's diet plan ----
     @PostMapping("/admin/diet/delete")
-    public String adminDietDelete(@RequestParam String memberId,
+
+    public String adminDietDelete(@RequestParam String memberId, //@RequestParam gets memberId
                                   HttpSession session) throws IOException {
+
         if (session.getAttribute("loggedAdmin") == null) return "redirect:/login";
-        dietPlanService.deleteDietPlan(memberId);
+
+        dietPlanService.deleteDietPlan(memberId); //call
 
         return "redirect:/admin/diet";
 
