@@ -2,6 +2,7 @@ package com.fitnesscenter.service;
 
 import com.fitnesscenter.model.MemberWorkout;
 import com.fitnesscenter.model.WorkoutPlan;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -74,17 +75,19 @@ public class WorkoutService {
     // Update
 
     public void saveMemberWorkout(MemberWorkout workout) throws IOException {
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>(); //Empty list to store all lines from the file
         File file = new File(filePath);
         file.getParentFile().mkdirs();
 
 
         // Read existing lines excluding this member
         if (file.exists()) {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line;
 
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line;
             boolean skip = false;
+
             while ((line = reader.readLine()) != null) {
 
                 // Found old data — START skipping
@@ -101,21 +104,29 @@ public class WorkoutService {
             reader.close();
         }
 
+
         // Add new workout block -Updated new block
-        lines.add("MEMBER:" + workout.getMemberId());
+        lines.add("MEMBER:" + workout.getMemberId()); // Write → MEMBER:M001
         lines.add("PLAN:" + workout.getPlanType());
-        for (WorkoutPlan day : workout.getDays()) {
+
+        for (WorkoutPlan day : workout.getDays()) { // Loop through all 7 days
             lines.add("DAY:" + day.toFileString()); //pipe format
+
         }
-        lines.add("END:" + workout.getMemberId());
+
+        lines.add("END:" + workout.getMemberId());  // Marks the end of this member's block
 
 
         // Write back
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
         for (String l : lines) {
-            writer.write(l);
+
+            writer.write(l); //Write one line to file
+
             writer.newLine();
         }
+
         writer.close();
     }
 
@@ -129,32 +140,55 @@ public class WorkoutService {
 
     //ABSTRACTION
     public MemberWorkout getMemberWorkout(String memberId) throws IOException {
+
         File file = new File(filePath);
         if (!file.exists()) return null;
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
+
         String line;
         MemberWorkout workout = null;
-        boolean reading = false;
 
-        while ((line = reader.readLine()) != null) {
+        boolean reading = false; //not found yet
+
+        while ((line = reader.readLine()) != null) { // Read one line at a time until file ends
+
             if (line.equals("MEMBER:" + memberId)) {
-                reading = true;
+
+                reading = true; //Found -- START reading
+
                 workout = new MemberWorkout(memberId, "");
-            } else if (reading && line.startsWith("PLAN:")) {
-                workout.setPlanType(line.substring(5));
+
+            } else if (reading && line.startsWith("PLAN:")) { //Found PLAN:PPL
+
+                workout.setPlanType(line.substring(5)); //set plan type
+
+
             } else if (reading && line.startsWith("DAY:")) {
                 String[] parts = line.substring(4).split("\\|", 3);
+
+                // parts[0] = "Monday"
+                // parts[1] = "Push"
+                // parts[2] = "Bench Press 4x8"
+
+
+
                 if (parts.length == 3) {
-                    workout.addDay(new WorkoutPlan(parts[0], parts[1], parts[2]));
+                    workout.addDay(new WorkoutPlan(parts[0], parts[1], parts[2])); //Create WorkoutPlan and add to MemberWorkout
+
+                    //COMPOSITION
                 }
-            } else if (line.equals("END:" + memberId)) {
+
+            } else if (line.equals("END:" + memberId)) { //---End
                 reading = false;
                 break;
             }
         }
+
         reader.close();
+
         return workout;
+
     }
 
 
@@ -163,11 +197,15 @@ public class WorkoutService {
     // ---- DELETE member workout ----
 
     public void deleteMemberWorkout(String memberId) throws IOException {
+
         File file = new File(filePath);
-        if (!file.exists()) return;
+
+        if (!file.exists()) return; //If file doesn't exist , nothing to delete, stop here
 
         List<String> lines = new ArrayList<>();
+
         BufferedReader reader = new BufferedReader(new FileReader(file));
+
         String line;
         boolean skip = false;
 
