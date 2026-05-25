@@ -14,7 +14,7 @@ import java.util.List;
 public class DietPlanService {
 
     @Value("${diet.file.path}")
-    private String filePath;
+    private String filePath; // filePath is private — hidden from controller - Encapsulation
 
 
 
@@ -24,7 +24,7 @@ public class DietPlanService {
 
     public List<DietPlan> getAllDietPlans() throws IOException { // Returns a List of ALL diet plans
 
-        List<DietPlan> plans = new ArrayList<>();
+        List<DietPlan> plans = new ArrayList<>(); // Create an empty list tray to hold diet cards
 
         File file = new File(filePath); //txt
 
@@ -60,7 +60,7 @@ public class DietPlanService {
     public void saveAllDietPlans(List<DietPlan> plans) throws IOException {
         File file = new File(filePath);
 
-        file.getParentFile().mkdirs();
+        file.getParentFile().mkdirs();  //Create nested folders if they are missing
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 

@@ -22,7 +22,7 @@ public class WorkoutService {
     public MemberWorkout getTemplate(String planType) {
         //  Returns a pre-built 7-day workout plan
 
-        MemberWorkout workout = new MemberWorkout("", planType);
+        MemberWorkout workout = new MemberWorkout("", planType); // Create a blank workout template card in memory
 
         if (planType.equals("PPL")) {
             workout.addDay(new WorkoutPlan("Monday",    "Push — Chest & Shoulders", "Bench Press 4x8,Incline DB Press 3x10,Cable Flyes 3x15,Shoulder Press 3x10,Lateral Raises 3x15"));
@@ -76,8 +76,10 @@ public class WorkoutService {
 
     public void saveMemberWorkout(MemberWorkout workout) throws IOException {
         List<String> lines = new ArrayList<>(); //Empty list to store all lines from the file
+
         File file = new File(filePath);
-        file.getParentFile().mkdirs();
+
+        file.getParentFile().mkdirs(); //Create folders if they don't exist yet
 
 
         // Read existing lines excluding this member
@@ -88,7 +90,7 @@ public class WorkoutService {
             String line;
             boolean skip = false;
 
-            while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) { // Loop: Read file line-by-line
 
                 // Found old data — START skipping
                 if (line.startsWith("MEMBER:" + workout.getMemberId())) {
@@ -210,6 +212,7 @@ public class WorkoutService {
         boolean skip = false;
 
         while ((line = reader.readLine()) != null) { //Read all,ignore matching block
+
             if (line.equals("MEMBER:" + memberId)) { skip = true; }
             if (!skip) lines.add(line);
             if (line.equals("END:" + memberId)) { skip = false; }
