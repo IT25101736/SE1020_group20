@@ -29,7 +29,8 @@ public class DietController {
 
     // ---- GET /member/diet — member views their diet plan ----
 
-    @GetMapping("/member/diet")
+    @GetMapping("/member/diet") // when user opens a page
+
     public String memberDiet(HttpSession session, Model model) throws IOException {
         Member loggedMember = (Member) session.getAttribute("loggedMember");
         if (loggedMember == null) return "redirect:/login";
@@ -42,8 +43,10 @@ public class DietController {
 
 
 
+
     // ---- POST /member/diet/save — member saves their own diet plan ----
-    @PostMapping("/member/diet/save")
+    @PostMapping("/member/diet/save") //when user submits a form
+
     public String memberDietSave(@RequestParam String planName,
                                  @RequestParam String breakfast,
                                  @RequestParam String lunch,
@@ -58,7 +61,7 @@ public class DietController {
         return "redirect:/member/diet?saved=true";
     }
 
-
+  //@RequestParam-Gets the value from the form that user filled
 
 
     // ---- POST /member/diet/delete — member deletes their diet plan ----
