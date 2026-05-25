@@ -3,33 +3,36 @@ package com.fitnesscenter.controller;
 import com.fitnesscenter.model.Admin;
 import com.fitnesscenter.model.Member;
 import com.fitnesscenter.service.MemberService;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;//Storing logged sessions
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.stereotype.Controller;//Spring MVC Controller
+import org.springframework.ui.Model;//Used to send data from backend to jsp pages
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
 
+// Controller class handling member-related web requests and page navigation
 @Controller
 public class MemberController {
+
+    // Dependancy inverrsion principle
     @Autowired
     private MemberService memberService;
 
-    // ---- GET /home — PUBLIC ----
+    // Display public home page
     @GetMapping("/home")
     public String home() {
         return "home";
     }
 
-    // ---- GET /payment — PUBLIC ----
+    // Display payment page
     @GetMapping("/payment")
     public String payment() {
         return "payment";
     }
 
-    // ---- GET /membership-plans — PUBLIC ----
+    // Display available membership plans
     @GetMapping("/membership-plans")
     public String membershipPlans(HttpSession session, Model model) {
         Member loggedMember = (Member) session.getAttribute("loggedMember");
@@ -37,7 +40,7 @@ public class MemberController {
         return "membership-plans";
     }
 
-    // ---- GET /member/dashboard ----
+    // Display member dashboard after login
     @GetMapping("/member/dashboard")
     public String memberDashboard(HttpSession session, Model model) throws IOException {
         Member loggedMember = (Member) session.getAttribute("loggedMember");
@@ -48,20 +51,22 @@ public class MemberController {
         return "member-dashboard";
     }
 
-    // ---- GET /members — staff view ----
+    // Admin-only member management page
     @GetMapping("/members")
     public String manageMembers(HttpSession session, Model model) throws IOException {
+        //Only admins allowed
         Admin loggedAdmin = (Admin) session.getAttribute("loggedAdmin");
         if (loggedAdmin == null) {
             return "redirect:/login";
         }
+        // Display all members for admin management
         List<Member> members = memberService.getAllMembers();
         model.addAttribute("members", members);
         model.addAttribute("loggedAdmin", loggedAdmin);
         return "manage-members";
     }
 
-    // ---- GET /member/payment — existing member payment ----
+    // Display payment page for logged member
     @GetMapping("/member/payment")
     public String memberPayment(HttpSession session, Model model) {
         Member loggedMember = (Member) session.getAttribute("loggedMember");
@@ -95,11 +100,12 @@ public class MemberController {
         );
 
         Member updated = memberService.findById(loggedMember.getId());
+        // Update membership details of logged member
         session.setAttribute("loggedMember", updated);
         return "redirect:/member/dashboard";
     }
 
-    // ---- POST /member/create ----
+    // Admin creates new member
     @PostMapping("/member/create")
     public String createMember(@RequestParam String name,
                                @RequestParam String email,
@@ -121,7 +127,7 @@ public class MemberController {
         return "redirect:/members";
     }
 
-    // ---- POST /member/update ----
+    // Update existing member details by admin
     @PostMapping("/member/update")
     public String updateMember(@RequestParam String id,
                                @RequestParam String name,
@@ -142,7 +148,7 @@ public class MemberController {
         return "redirect:/members";
     }
 
-    // ---- POST /member/delete ----
+    // Delete member from system
     @PostMapping("/member/delete")
     public String deleteMember(@RequestParam String id,
                                HttpSession session) throws IOException {
@@ -152,7 +158,7 @@ public class MemberController {
         return "redirect:/members";
     }
 
-    // ---- GET /member/logout ----
+    // Logout member and clear session
     @GetMapping("/member/logout")
     public String memberLogout(HttpSession session) {
         session.removeAttribute("loggedMember");
@@ -194,7 +200,7 @@ public class MemberController {
         return "redirect:/register-success";
     }
 
-    // ---- GET /register-success ----
+    // Display successful registration details
     @GetMapping("/register-success")
     public String registerSuccess(HttpSession session, org.springframework.ui.Model model) {
         String memberId = (String) session.getAttribute("newMemberId");

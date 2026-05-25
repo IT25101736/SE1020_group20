@@ -1,6 +1,7 @@
 package com.fitnesscenter.model;
 
 public class Member {
+    //Member attributes
     private String id;
     private String name;
     private String email;
@@ -14,10 +15,13 @@ public class Member {
     private String paymentStatus;
     private String password;
 
+    //Constructor to initialize member object
     public Member(String id, String name, String email, String phone,
                   String membershipType, String workoutPlan, String dietPlan,
                   String trainerName, String joinDate, String expiryDate,
                   String paymentStatus, String password) {
+
+        //Assign parameter value to class variable
         this.id             = id;
         this.name           = name;
         this.email          = email;
@@ -31,7 +35,7 @@ public class Member {
         this.paymentStatus  = paymentStatus;
         this.password       = password;
     }
-
+// getter method
     public String getId()             { return id; }
     public String getName()           { return name; }
     public String getEmail()          { return email; }
@@ -45,6 +49,7 @@ public class Member {
     public String getPaymentStatus()  { return paymentStatus; }
     public String getPassword()       { return password; }
 
+    //Setter method
     public void setName(String name)                     { this.name = name; }
     public void setEmail(String email)                   { this.email = email; }
     public void setPhone(String phone)                   { this.phone = phone; }
@@ -56,6 +61,7 @@ public class Member {
     public void setPaymentStatus(String paymentStatus)   { this.paymentStatus = paymentStatus; }
     public void setPassword(String password)             { this.password = password; }
 
+    //Convert member object into txt file format
     public String toFileString() {
         return id + "|" + name + "|" + email + "|" + phone + "|" +
                 membershipType + "|" + workoutPlan + "|" + dietPlan + "|" +

@@ -4,15 +4,18 @@ import com.fitnesscenter.model.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;//File handling
+import java.util.ArrayList;// Dynamic member list
+import java.util.List;//Collection interface
 
+//Service class handling member business logic and file operations
 @Service
 public class MemberService {
+    // Path of member txt file from application.properties
     @Value("${member.file.path}")
     private String filePath;
 
+    // Read all members from txt file
     public List<Member> getAllMembers() throws IOException {
         List<Member> members = new ArrayList<>();
         File file = new File(filePath);
@@ -35,6 +38,7 @@ public class MemberService {
         return members;
     }
 
+    // Save all member data into txt file
     public void saveAllMembers(List<Member> members) throws IOException {
         File file = new File(filePath);
         file.getParentFile().mkdirs();
@@ -46,8 +50,10 @@ public class MemberService {
         writer.close();
     }
 
+    // Find member using ID and password for login
     public Member findByIdAndPassword(String id, String password) throws IOException {
         for (Member m : getAllMembers()) {
+            //Validates credentials
             if (m.getId().equals(id) && m.getPassword().equals(password)) {
                 return m;
             }
@@ -55,6 +61,7 @@ public class MemberService {
         return null;
     }
 
+    // Search member by ID
     public Member findById(String id) throws IOException {
         for (Member m : getAllMembers()) {
             if (m.getId().equals(id)) return m;
@@ -62,11 +69,13 @@ public class MemberService {
         return null;
     }
 
+    // Generate new member ID automatically
     public String generateId() throws IOException {
         List<Member> members = getAllMembers();
         return "M" + String.format("%03d", members.size() + 1);
     }
 
+    // Create and save new member
     public void createMember(String name, String email, String phone,
                              String membershipType, String workoutPlan, String dietPlan,
                              String trainerName, String joinDate, String expiryDate,
@@ -80,6 +89,7 @@ public class MemberService {
         saveAllMembers(members);
     }
 
+    // Update existing member details
     public void updateMember(String id, String name, String email, String phone,
                              String membershipType, String workoutPlan, String dietPlan,
                              String trainerName, String expiryDate,
@@ -102,7 +112,9 @@ public class MemberService {
         saveAllMembers(members);
     }
 
+    // Delete member from system
     public void deleteMember(String id) throws IOException {
+        //Deletes matching member
         List<Member> members = getAllMembers();
         members.removeIf(m -> m.getId().equals(id));
         saveAllMembers(members);
