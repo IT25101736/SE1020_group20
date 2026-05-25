@@ -18,7 +18,7 @@ import java.util.List;
 @Controller
 public class DietController {
 
-    @Autowired
+    @Autowired  //Spring automatically gives the service object
     private DietPlanService dietPlanService;
 
     @Autowired
@@ -28,6 +28,7 @@ public class DietController {
 
 
     // ---- GET /member/diet — member views their diet plan ----
+
     @GetMapping("/member/diet")
     public String memberDiet(HttpSession session, Model model) throws IOException {
         Member loggedMember = (Member) session.getAttribute("loggedMember");
