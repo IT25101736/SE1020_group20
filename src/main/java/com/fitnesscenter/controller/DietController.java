@@ -32,11 +32,17 @@ public class DietController {
     @GetMapping("/member/diet") // when user opens a page
 
     public String memberDiet(HttpSession session, Model model) throws IOException {
+
         Member loggedMember = (Member) session.getAttribute("loggedMember");
+
         if (loggedMember == null) return "redirect:/login";
+
         DietPlan dietPlan = dietPlanService.findByMemberId(loggedMember.getId());
+
         model.addAttribute("loggedMember", loggedMember);
+
         model.addAttribute("dietPlan", dietPlan);
+
         return "member-diet";
     }
 
@@ -54,22 +60,34 @@ public class DietController {
                                  @RequestParam String snacks,
                                  @RequestParam String notes,
                                  HttpSession session) throws IOException {
+
         Member loggedMember = (Member) session.getAttribute("loggedMember");
+
         if (loggedMember == null) return "redirect:/login";
+
         dietPlanService.createOrUpdate(loggedMember.getId(), planName,
                 breakfast, lunch, dinner, snacks, notes);
-        return "redirect:/member/diet?saved=true";
+
+        return "redirect:/member/diet?saved=true"; //Goes  another page after action
     }
 
-  //@RequestParam-Gets the value from the form that user filled
+  //@RequestParam-gets all form values
+
+
+
 
 
     // ---- POST /member/diet/delete — member deletes their diet plan ----
     @PostMapping("/member/diet/delete")
+
     public String memberDietDelete(HttpSession session) throws IOException {
+
         Member loggedMember = (Member) session.getAttribute("loggedMember");
+
         if (loggedMember == null) return "redirect:/login";
+
         dietPlanService.deleteDietPlan(loggedMember.getId());
+
         return "redirect:/member/diet";
     }
 
@@ -78,14 +96,23 @@ public class DietController {
 
     // ---- GET /admin/diet — admin views all member diet plans ----
     @GetMapping("/admin/diet")
+
     public String adminDiet(HttpSession session, Model model) throws IOException {
+
         Admin loggedAdmin = (Admin) session.getAttribute("loggedAdmin");
+
         if (loggedAdmin == null) return "redirect:/login";
+
         List<Member> members     = memberService.getAllMembers();
+
         List<DietPlan> dietPlans = dietPlanService.getAllDietPlans();
+
         model.addAttribute("members", members);
+
         model.addAttribute("dietPlans", dietPlans);
+
         model.addAttribute("loggedAdmin", loggedAdmin);
+
         return "admin-diet";
     }
 
@@ -96,14 +123,23 @@ public class DietController {
     @GetMapping("/admin/diet/edit")
     public String adminDietEdit(@RequestParam String memberId,
                                 HttpSession session, Model model) throws IOException {
+
         Admin loggedAdmin = (Admin) session.getAttribute("loggedAdmin");
+
         if (loggedAdmin == null) return "redirect:/login";
+
         Member member     = memberService.findById(memberId);
+
         DietPlan dietPlan = dietPlanService.findByMemberId(memberId);
+
         model.addAttribute("member", member);
+
         model.addAttribute("dietPlan", dietPlan);
+
         model.addAttribute("loggedAdmin", loggedAdmin);
-        return "admin-diet-edit";
+
+        return "admin-diet-edit"; //sends  to the edit form page so admin can chng
+
     }
 
 
@@ -121,7 +157,9 @@ public class DietController {
                                 HttpSession session) throws IOException {
         if (session.getAttribute("loggedAdmin") == null) return "redirect:/login";
         dietPlanService.createOrUpdate(memberId, planName, breakfast, lunch, dinner, snacks, notes);
+
         return "redirect:/admin/diet?saved=true";
+
     }
 
 
@@ -133,6 +171,8 @@ public class DietController {
                                   HttpSession session) throws IOException {
         if (session.getAttribute("loggedAdmin") == null) return "redirect:/login";
         dietPlanService.deleteDietPlan(memberId);
+
         return "redirect:/admin/diet";
+
     }
 }
