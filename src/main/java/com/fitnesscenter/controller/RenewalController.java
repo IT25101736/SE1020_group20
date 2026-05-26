@@ -1,3 +1,4 @@
+package com.fitnesscenter.controller;
 
 import com.fitnesscenter.model.Admin;
 import com.fitnesscenter.model.Member;
@@ -29,13 +30,8 @@ public class RenewalController {
         Admin loggedAdmin = (Admin) session.getAttribute("loggedAdmin");
         if (loggedAdmin == null) return "redirect:/login";
 
-        // Get pending queue (FIFO order)
         Queue<RenewalRequest> pendingQueue = renewalQueueService.getPendingQueue();
-
-        // Get all requests
         List<RenewalRequest> allRequests = renewalQueueService.getAllRequests();
-
-        // Get members sorted by expiry date using Insertion Sort
         List<Member> members = memberService.getAllMembers();
         List<Member> sortedMembers = renewalQueueService.sortMembersByRenewalDate(members);
 
@@ -102,8 +98,6 @@ public class RenewalController {
         if (loggedMember == null) return "redirect:/login";
 
         String today = java.time.LocalDate.now().toString();
-
-        // Add to renewal queue (FIFO)
         renewalQueueService.enqueue(
                 loggedMember.getId(),
                 loggedMember.getName(),
@@ -111,7 +105,6 @@ public class RenewalController {
                 requestedPlan,
                 today
         );
-
         return "redirect:/member/dashboard?renewed=true";
     }
 
@@ -123,7 +116,7 @@ public class RenewalController {
                                    HttpSession session) throws IOException {
         if (session.getAttribute("loggedAdmin") == null) return "redirect:/login";
 
-        // 1. Mark request as PROCESSED (dequeue)
+        // 1. Mark request as PROCESSED
         List<RenewalRequest> list = renewalQueueService.getAllRequests();
         for (RenewalRequest r : list) {
             if (r.getRequestId().equals(requestId)) {
@@ -151,9 +144,18 @@ public class RenewalController {
             );
         }
 
-        // 3. Run Insertion Sort on all members by expiry date (happens automatically on /renewals page load)
+        // 3. Insertion Sort runs automatically on /renewals page load
         return "redirect:/renewals";
     }
 
-
+    // ---- POST /renewal/delete — admin deletes a renewal request ----
+    @PostMapping("/renewal/delete")
+    public String deleteRequest(@RequestParam String requestId,
+                                HttpSession session) throws IOException {
+        if (session.getAttribute("loggedAdmin") == null) return "redirect:/login";
+        List<RenewalRequest> list = renewalQueueService.getAllRequests();
+        list.removeIf(r -> r.getRequestId().equals(requestId));
+        renewalQueueService.saveAllRequests(list);
+        return "redirect:/renewals";
+    }
 }
