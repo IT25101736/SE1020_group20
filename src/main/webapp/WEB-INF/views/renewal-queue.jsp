@@ -227,6 +227,15 @@
                                     <input type="hidden" name="requestedPlan" value="<%= r.getRequestedPlan() %>">
                                     <button class="btn-process" style="font-size:12px;padding:8px 14px">&#10003; Confirm & Accept</button>
                                 </form>
+                                <form method="POST" action="/renewal/delete"
+                                      onsubmit="return confirm('Delete this renewal request?')">
+                                    <input type="hidden" name="requestId" value="<%= r.getRequestId() %>">
+                                    <button style="background:transparent;color:#e05555;border:1px solid rgba(224,85,85,0.3);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s"
+                                            onmouseover="this.style.background='#e05555';this.style.color='white'"
+                                            onmouseout="this.style.background='transparent';this.style.color='#e05555'">
+                                        &#128465; Delete
+                                    </button>
+                                </form>
                             </div>
                         </div>
                         <% isFirst = false; } %>
