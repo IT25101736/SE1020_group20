@@ -1,0 +1,2 @@
+M001|John Silva|john@email.com|0771234567|Basic|Full Body Workout|Keto Diet|Andrew|2026-01-15|2026-06-15|Paid|member123
+M002|Sarah Fernando|sarah@email.com|0779876543|Yearly|Cardio Plan|Low Carb Diet|Michael|2026-02-20|2027-02-20|Paid|member456
